@@ -10,5 +10,5 @@ resolvers += "jitpack" at "https://jitpack.io"
 libraryDependencies ++= Seq(
   "com.twitter"  %%  "algebird-core"   % "0.11.0",
   "com.github.prasanthj" % "hyperloglog" % "cec4bb8980",
-  "com.linkedin.datafu" % "datafu" % "1.2.0"
+  "com.clearspring.analytics" % "stream" % "2.7.0"
 )
