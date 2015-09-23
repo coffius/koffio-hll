@@ -1,2 +1,2 @@
 # koffio-hll
-Exmple of using HLL
+Example of using HLL
