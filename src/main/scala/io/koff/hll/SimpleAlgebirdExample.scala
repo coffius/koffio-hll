@@ -21,7 +21,7 @@ object SimpleAlgebirdExample {
     val merged = hll.sum(hlls)
 
     //WARN: don`t use merged.size - it is a different thing
-    //get estimate count from merged hll
+    //get the estimate count from merged hll
     println("estimate count: " + hll.sizeOf(merged).estimate)
   }
 }

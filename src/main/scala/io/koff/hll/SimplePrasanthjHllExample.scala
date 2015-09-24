@@ -23,9 +23,13 @@ object SimplePrasanthjHllExample {
     val mergedHll = hllBuilder.build()
 
     //merge data
-    data.foreach(mergedHll.addString)
+    data.foreach { elem =>
+      //explicitly set using encoding
+      val bytes = elem.getBytes("utf-8")
+      mergedHll.addBytes(bytes)
+    }
 
-    //print estimation of count
+    //print the estimation of count
     println("estimate count: " + mergedHll.count())
   }
 }
