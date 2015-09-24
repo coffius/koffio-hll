@@ -1,11 +1,11 @@
 package io.koff.hll
 
-import com.twitter.algebird.HyperLogLogMonoid
-
 /**
  * Simple example of using HLL from algebird
  */
 object SimpleAlgebirdExample {
+  import com.twitter.algebird.HyperLogLogMonoid
+
   def main(args: Array[String]) {
     //define test data
     val data = Seq("aaa", "bbb", "ccc")
@@ -23,5 +23,7 @@ object SimpleAlgebirdExample {
     //WARN: don`t use merged.size - it is a different thing
     //get the estimate count from merged hll
     println("estimate count: " + hll.sizeOf(merged).estimate)
+    //or
+    println("estimate count: " + merged.approximateSize.estimate)
   }
 }
