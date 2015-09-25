@@ -112,7 +112,7 @@ object Comparison {
   case class EstimationResult(name: String, estimateCount: Long, size: Long, durationMsec: Long) {
     def print(realCount: Long): Unit = {
       val error = 1d - estimateCount.toDouble / realCount.toDouble
-      println(f"$name[error: $error%2.6f%%]= " + this)
+      println(f"$name[error: $error%2.6f%%, calcTime: $durationMsec msecs, estimateCount: $estimateCount, dataSize: $size bytes]")
     }
   }
 }
