@@ -32,9 +32,9 @@ object Comparison {
     val prasanthjResult = prasanthjHll(testData)
     val streamResult    = streamHll(testData)
 
-    println("algebird: "  + algebirdResult)
-    println("prasanthj: " + prasanthjResult)
-    println("stream: "    + streamResult)
+    algebirdResult.print(1000000 + 1)
+    prasanthjResult.print(1000000 + 1)
+    streamResult.print(1000000 + 1)
   }
 
   def algebird(testData: Seq[String]): EstimationResult = {
@@ -52,6 +52,7 @@ object Comparison {
     val calcTime = System.currentTimeMillis() - startTime
 
     EstimationResult(
+      name = "algebird",
       estimateCount = merged.approximateSize.estimate,
       size = merged.size,
       durationMsec = calcTime
@@ -79,6 +80,7 @@ object Comparison {
     val array = byteStream.toByteArray
 
     EstimationResult(
+      name = "prasanthj",
       estimateCount = merged.count(),
       size = array.size,
       durationMsec = calcTime
@@ -100,11 +102,17 @@ object Comparison {
     val calcTime = System.currentTimeMillis() - startTime
 
     EstimationResult(
+      name = "stream",
       estimateCount = merged.cardinality(),
       size = merged.getBytes.size,
       durationMsec = calcTime
     )
   }
 
-  case class EstimationResult(estimateCount: Long, size: Long, durationMsec: Long)
+  case class EstimationResult(name: String, estimateCount: Long, size: Long, durationMsec: Long) {
+    def print(realCount: Long): Unit = {
+      val error = 1d - estimateCount.toDouble / realCount.toDouble
+      println(f"$name[error: $error%2.6f%%]= " + this)
+    }
+  }
 }
