@@ -13,6 +13,10 @@ import hyperloglog.HyperLogLogUtils
  */
 object Comparison {
 
+  /**
+   * Generate test data. 1000000 of rnd UUID values and 1000000 copies of a same value. 2000000 in total
+   * @return
+   */
   def generateTestData(): Seq[String] = {
     val commonData = (1 to 1000000).map(_ => "0x0000000000000000")
 
@@ -32,9 +36,10 @@ object Comparison {
     val prasanthjResult = prasanthjHll(testData)
     val streamResult    = streamHll(testData)
 
-    algebirdResult.print(1000000 + 1)
-    prasanthjResult.print(1000000 + 1)
-    streamResult.print(1000000 + 1)
+    val realCount = 1000000 + 1
+    algebirdResult.print(realCount)
+    prasanthjResult.print(realCount)
+    streamResult.print(realCount)
   }
 
   def algebird(testData: Seq[String]): EstimationResult = {
@@ -60,16 +65,11 @@ object Comparison {
   }
 
   def prasanthjHll(testData: Seq[String]): EstimationResult = {
-    //create a builder for HLL.
     val hllBuilder = new HyperLogLogBuilder()
-
-    //create hll object in which we will merge our data
     val merged = hllBuilder.build()
 
     val startTime = System.currentTimeMillis()
-    //merge data
     testData.foreach { elem =>
-      //explicitly set using encoding
       val bytes = elem.getBytes("utf-8")
       merged.addBytes(bytes)
     }
@@ -88,14 +88,10 @@ object Comparison {
   }
 
   def streamHll(testData: Seq[String]): EstimationResult = {
-    //create HLL object in which we will add our data.
-    // You can set parameters here in a constructor
     val merged = new HyperLogLogPlus(16, 25)
 
     val startTime = System.currentTimeMillis()
-    //adding data in hll
     testData.foreach{ elem =>
-      //in order to control string encoding during string conversion to bytes we explicitly set using encoding
       val bytes = elem.getBytes("utf-8")
       merged.offer(bytes)
     }

@@ -1,11 +1,10 @@
 package io.koff.hll
 
-import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus
-
 /**
  * Simple example of using HLL from stream
  */
 object SimpleStreamExample {
+  import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus
   def main(args: Array[String]) {
     //define test data
     val data = Seq("aaa", "bbb", "ccc")

@@ -1,11 +1,10 @@
 package io.koff.hll
 
-import hyperloglog.HyperLogLog.HyperLogLogBuilder
-
 /**
  * Simple example of using HLL from Prasanthj
  */
 object SimplePrasanthjHllExample {
+  import hyperloglog.HyperLogLog.HyperLogLogBuilder
   def main(args: Array[String]) {
     //define test data
     val data = Seq("aaa", "bbb", "ccc")
