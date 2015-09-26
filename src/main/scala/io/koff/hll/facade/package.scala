@@ -1,5 +1,7 @@
 package io.koff.hll
 
+import scala.UnsupportedOperationException
+
 /**
  * Facade for different implementations of HLL
  */
@@ -46,19 +48,39 @@ package object facade {
     def create(bytes: Array[Byte]): HLL
   }
 
+  trait HLLConverter[A]{
+    def toHLL(value: A)(implicit hllBuilder: HLLBuilder): HLL
+  }
+
+  implicit val stringConverter = new HLLConverter[String] {
+    override def toHLL(value: String)(implicit hllBuilder: HLLBuilder): HLL = {
+      val strBytes = value.getBytes("utf-8")
+      hllBuilder.create(strBytes)
+    }
+  }
+  
   /**
    * Enriches string by `.toHLL` operation
    */
-  implicit class HLLString(str: String) {
+  implicit class HLLString(value: String) {
 
     /**
      * Convert string value to HLL counter with one element
      * @param hllBuilder builder which will be used to create HLL object
      * @return new hll object
      */
-    def toHLL(implicit hllBuilder: HLLBuilder): HLL = {
-      val strBytes = str.getBytes("utf-8")
-      hllBuilder.create(strBytes)
+    def toHLL(implicit hllBuilder: HLLBuilder): HLL = stringConverter.toHLL(value)
+  }
+
+  /**
+   * Enriches traversables by `.toHLL`
+   */
+  implicit class HLLTraversable[A](traversable: Traversable[A]){
+    /**
+     * Returns counter which contains all the elements from traversable
+     */
+    def toHLL(implicit hllBuilder: HLLBuilder, hllConverter: HLLConverter[A]): HLL = {
+      traversable.foldLeft(hllBuilder.create)(_ + hllConverter.toHLL(_))
     }
   }
 }
