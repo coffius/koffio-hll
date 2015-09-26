@@ -14,6 +14,6 @@ object Intersection {
     def set4 = Seq("444", "555", "666", "777", "888", "999").toHLL
 
     val intersectionCount = HLLUtils.intersection(set1, set2, set3, set4)
-    println("intersection: " + intersectionCount)
+    println("intersection: " + intersectionCount) //will print "intersection: 3"
   }
 }
