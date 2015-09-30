@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream
 import java.util.UUID
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus
+import com.google.common.hash.Hashing
 import com.twitter.algebird.HyperLogLogMonoid
 import hyperloglog.HyperLogLog.HyperLogLogBuilder
 import hyperloglog.HyperLogLogUtils
@@ -35,11 +36,13 @@ object Comparison {
     val algebirdResult  = algebird(testData)
     val prasanthjResult = prasanthjHll(testData)
     val streamResult    = streamHll(testData)
+    val agknResult         = agknHll(testData)
 
     val realCount = 1000000 + 1
     algebirdResult.print(realCount)
     prasanthjResult.print(realCount)
     streamResult.print(realCount)
+    agknResult.print(realCount)
   }
 
   def algebird(testData: Seq[String]): EstimationResult = {
@@ -101,6 +104,35 @@ object Comparison {
       name = "stream",
       estimateCount = merged.cardinality(),
       size = merged.getBytes.size,
+      durationMsec = calcTime
+    )
+  }
+
+  def agknHll(testData: Seq[String]): EstimationResult = {
+    import net.agkn.hll.HLL
+
+    val seed = 123456
+    val hash = Hashing.murmur3_128(seed)
+
+    def toHash(str: String): Long = {
+      val hasher = hash.newHasher()
+      //As always we set encoding explicitly
+      hasher.putBytes(str.getBytes("utf-8"))
+      hasher.hash().asLong()
+    }
+
+    val merged = new HLL(16, 5)
+
+    val startTime = System.currentTimeMillis()
+
+    testData.foreach(str => merged.addRaw(toHash(str)))
+
+    val calcTime = System.currentTimeMillis() - startTime
+
+    EstimationResult(
+      name = "agkn-hll",
+      estimateCount = merged.cardinality(),
+      size = merged.toBytes.size,
       durationMsec = calcTime
     )
   }
