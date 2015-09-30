@@ -5,7 +5,7 @@ import com.google.common.hash.{Hashing, Murmur3_128HashFunction}
 /**
  * Simple example of using https://github.com/aggregateknowledge/java-hll
  */
-object SimpleJavaHllExample {
+object SimpleAgknHllExample {
   import net.agkn.hll.HLL
 
   private val seed = 123456
